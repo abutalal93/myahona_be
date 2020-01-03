@@ -29,6 +29,10 @@ public class LeaveTrack implements Serializable {
     @JoinColumn(name = "sts_id", nullable = false)
     private Status status;
 
+    @OneToOne
+    @JoinColumn(name = "sys_id", nullable = false)
+    private SystemUser systemUser;
+
     public Long getId() {
         return id;
     }
@@ -67,5 +71,13 @@ public class LeaveTrack implements Serializable {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public SystemUser getSystemUser() {
+        return systemUser;
+    }
+
+    public void setSystemUser(SystemUser systemUser) {
+        this.systemUser = systemUser;
     }
 }

@@ -2,6 +2,8 @@ package com.decoders.leaves.Utils;
 
 import org.springframework.context.ApplicationContext;
 
+import java.time.LocalDateTime;
+
 public class Utils {
 
     private static ApplicationContext applicationContext;
@@ -12,5 +14,14 @@ public class Utils {
 
     public static void setApplicationContext(ApplicationContext applicationContext) {
         Utils.applicationContext = applicationContext;
+    }
+
+    public static String generateLeaveNumber() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+
+        String leaveNumber= localDateTime.getYear()+""+localDateTime.getMonth()+""+localDateTime.getDayOfMonth()+""+localDateTime.getHour()+""+localDateTime.getMinute()+""+localDateTime.getSecond()+""+localDateTime.getNano();
+        System.out.println("leaveNumber: "+leaveNumber);
+        System.out.println("leaveNumber: "+leaveNumber.length());
+        return leaveNumber;
     }
 }
