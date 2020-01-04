@@ -1,6 +1,7 @@
 package com.decoders.leaves.resource;
 
 import com.decoders.leaves.entities.Leave;
+import com.decoders.leaves.entities.LeaveTrack;
 import com.decoders.leaves.entities.LeaveType;
 import com.decoders.leaves.entities.Status;
 
@@ -22,6 +23,7 @@ public class LeaveResource {
     private String statusCode;
     private Long leaveTypeId;
     private String leaveTypeCode;
+    private List<LeaveTrackResource> leaveTrackResourceList;
 
     public Long getId() {
         return id;
@@ -119,6 +121,14 @@ public class LeaveResource {
         this.leaveTypeCode = leaveTypeCode;
     }
 
+    public List<LeaveTrackResource> getLeaveTrackResourceList() {
+        return leaveTrackResourceList;
+    }
+
+    public void setLeaveTrackResourceList(List<LeaveTrackResource> leaveTrackResourceList) {
+        this.leaveTrackResourceList = leaveTrackResourceList;
+    }
+
     public static LeaveResource toResource(Leave leave)
     {
         LeaveResource leaveResource = new LeaveResource();
@@ -140,6 +150,10 @@ public class LeaveResource {
         if(leave.getLeaveType() != null){
             leaveResource.setLeaveTypeId(leave.getLeaveType().getId());
             leaveResource.setLeaveTypeCode(leave.getLeaveType().getCode());
+        }
+
+        if(leave.getLeaveTrackList() != null && !leave.getLeaveTrackList().isEmpty()){
+            leaveResource.setLeaveTrackResourceList(LeaveTrackResource.toResource(leave.getLeaveTrackList()));
         }
 
         return leaveResource;
@@ -174,10 +188,19 @@ public class LeaveResource {
 
         if(this.leaveTypeId != null){
             LeaveType leaveType = new LeaveType();
-            leaveType.setId(this.statusId);
-            leaveType.setCode(this.statusCode);
+            leaveType.setId(this.leaveTypeId);
+            leaveType.setCode(this.leaveTypeCode);
             leave.setLeaveType(leaveType);
         }
+
+        if(this.leaveTrackResourceList != null && !this.leaveTrackResourceList.isEmpty()){
+            List<LeaveTrack> leaveTrackList = new ArrayList<>();
+            this.leaveTrackResourceList.forEach(leaveTrackResource -> {
+                leaveTrackList.add(leaveTrackResource.toLeaveTrack());
+            });
+            leave.setLeaveTrackList(leaveTrackList);
+        }
+
         return leave;
     }
 }

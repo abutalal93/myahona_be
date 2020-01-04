@@ -21,15 +21,15 @@ public class LeaveTrack implements Serializable {
     @Column(name = "lev_trk_create_date")
     private LocalDateTime createDate;
 
-    @OneToOne
-    @JoinColumn(name = "lev_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "lev_id")
     private Leave leave;
 
     @OneToOne
-    @JoinColumn(name = "sts_id", nullable = false)
+    @JoinColumn(name = "sts_id")
     private Status status;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "sys_id", nullable = false)
     private SystemUser systemUser;
 

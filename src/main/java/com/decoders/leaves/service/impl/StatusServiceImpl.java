@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -19,5 +20,10 @@ public class StatusServiceImpl implements StatusService {
     @Override
     public Status findStatusByCode(String code) {
         return statusRepo.findStatusByCode(code);
+    }
+
+    @Override
+    public List<Status> findStatus(String prefix) {
+        return statusRepo.findStatus(prefix);
     }
 }

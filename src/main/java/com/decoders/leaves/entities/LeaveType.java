@@ -8,9 +8,9 @@ import java.io.Serializable;
 public class LeaveType implements Serializable {
 
     @Id
-    @SequenceGenerator(name = "LeaveSeq", sequenceName = "LEAVE_SEQ"
+    @SequenceGenerator(name = "LeaveTypeSeq", sequenceName = "LEAVE_TYPE_SEQ"
             , initialValue = 1, allocationSize = 1)
-    @GeneratedValue(generator = "LeaveSeq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "LeaveTypeSeq", strategy = GenerationType.AUTO)
     @Column(name = "lev_typ_id" , updatable = false, nullable = false, unique = true)
     private Long id;
 

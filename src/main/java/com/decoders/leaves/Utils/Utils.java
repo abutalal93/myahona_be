@@ -19,7 +19,7 @@ public class Utils {
     public static String generateLeaveNumber() {
         LocalDateTime localDateTime = LocalDateTime.now();
 
-        String leaveNumber= localDateTime.getYear()+""+localDateTime.getMonth()+""+localDateTime.getDayOfMonth()+""+localDateTime.getHour()+""+localDateTime.getMinute()+""+localDateTime.getSecond()+""+localDateTime.getNano();
+        String leaveNumber= localDateTime.getYear()+""+localDateTime.getMonthValue()+""+localDateTime.getDayOfMonth()+""+localDateTime.getHour()+""+localDateTime.getMinute()+""+localDateTime.getSecond();
         System.out.println("leaveNumber: "+leaveNumber);
         System.out.println("leaveNumber: "+leaveNumber.length());
         return leaveNumber;

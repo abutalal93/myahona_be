@@ -35,9 +35,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/systemUser/login").permitAll()//
                 .anyRequest().authenticated();
 
-        http.exceptionHandling().accessDeniedPage("/login");
+//        http.exceptionHandling().accessDeniedPage("/login");
 
-//        http.exceptionHandling().authenticationEntryPoint(jwtUnAuthenticationEntryPoint);
+        http.exceptionHandling().authenticationEntryPoint(jwtUnAuthenticationEntryPoint);
 
         http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
 

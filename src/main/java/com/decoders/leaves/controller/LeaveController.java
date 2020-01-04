@@ -39,7 +39,8 @@ public class LeaveController {
 
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ResponseEntity<MessageBody> createLeave(HttpServletRequest request ,@RequestBody LeaveResource leaveResource) {
+    public ResponseEntity<MessageBody> createLeave(HttpServletRequest request ,
+                                                   @RequestBody LeaveResource leaveResource) {
 
         if(leaveResource.getEmployeeNumber() == null
                 || leaveResource.getEmployeeNumber().isEmpty()
@@ -50,8 +51,8 @@ public class LeaveController {
                 || leaveResource.getEndDate() == null
                 || leaveResource.getNumberOfDays() == null
                 || leaveResource.getNumberOfDays() == 0
-                || leaveResource.getStatusId() == null
-                || leaveResource.getStatusId() == 0){
+                || leaveResource.getLeaveTrackResourceList() == null
+                || leaveResource.getLeaveTrackResourceList().isEmpty()){
             throw new ResourceException(HttpStatus.BAD_REQUEST, "invalid_request");
         }
 
@@ -77,7 +78,8 @@ public class LeaveController {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public ResponseEntity<MessageBody> updateLeave(HttpServletRequest request ,@RequestBody LeaveResource leaveResource) {
+    public ResponseEntity<MessageBody> updateLeave(HttpServletRequest request ,
+                                                   @RequestBody LeaveResource leaveResource) {
 
         if(leaveResource.getId() == null
                 || leaveResource.getId() == 0
@@ -90,8 +92,8 @@ public class LeaveController {
                 || leaveResource.getEndDate() == null
                 || leaveResource.getNumberOfDays() == null
                 || leaveResource.getNumberOfDays() == 0
-                || leaveResource.getStatusId() == null
-                || leaveResource.getStatusId() == 0){
+                || leaveResource.getLeaveTrackResourceList() == null
+                || leaveResource.getLeaveTrackResourceList().isEmpty()){
             throw new ResourceException(HttpStatus.BAD_REQUEST, "invalid_request");
         }
 
@@ -104,6 +106,36 @@ public class LeaveController {
         Leave leave = leaveResource.toLeave();
 
         leave = leaveService.update(leave,systemUser);
+
+        LeaveResource createLeaveResource = LeaveResource.toResource(leave);
+
+        MessageBody messageBody = MessageBody.getInstance();
+
+        messageBody.setStatus("200");
+        messageBody.setText("OK");
+        messageBody.setBody(createLeaveResource);
+
+        return new ResponseEntity<>(messageBody, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public ResponseEntity<MessageBody> delete(HttpServletRequest request ,
+                                              @RequestBody LeaveResource leaveResource) {
+
+        if(leaveResource.getId() == null
+                || leaveResource.getId() == 0){
+            throw new ResourceException(HttpStatus.BAD_REQUEST, "invalid_request");
+        }
+
+        String token = jwtTokenProvider.resolveToken(request);
+
+        LoginUser loginUser = jwtTokenProvider.getLoginUser(token);
+
+        SystemUser systemUser = systemUserService.findByUsername(loginUser.getUsername());
+
+        Leave leave = leaveResource.toLeave();
+
+        leaveService.delete(leave);
 
         LeaveResource createLeaveResource = LeaveResource.toResource(leave);
 

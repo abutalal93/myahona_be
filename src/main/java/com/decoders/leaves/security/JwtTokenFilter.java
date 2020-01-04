@@ -30,6 +30,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             }
         } catch (ResourceException ex) {
             //this is very important, since it guarantees the user is not authenticated at all
+            System.out.println("ex: "+ex.getHttpStatus().toString());
             SecurityContextHolder.clearContext();
             httpServletResponse.sendError(ex.getHttpStatus().value(), ex.getMessage());
             return;

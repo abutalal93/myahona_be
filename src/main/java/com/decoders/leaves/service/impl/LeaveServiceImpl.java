@@ -48,34 +48,30 @@ public class LeaveServiceImpl implements LeaveService {
 
         LeaveType leaveType = leaveTypeRepo.findLeaveTypeById(leave.getLeaveType().getId());
 
-        if(leaveType == null){
-            throw new ResourceException(HttpStatus.NOT_FOUND, "leave_type_not_found");
-        }
-
-        Status status = statusRepo.findStatusById(leave.getStatus().getId());
-
-        if(status == null){
+        if (leaveType == null) {
             throw new ResourceException(HttpStatus.NOT_FOUND, "leave_type_not_found");
         }
 
         leave.setLeaveType(leaveType);
-        leave.setStatus(status);
-
         leave.setCreateDate(LocalDateTime.now());
         leave.setNumber(Utils.generateLeaveNumber());
 
+        List<LeaveTrack> leaveTrackList = leave.getLeaveTrackList();
+
         leave = leaveRepo.save(leave);
 
-        List<Status> statusList = statusRepo.findStausTrack(status.getId());
-
-        for(Status statusTrack: statusList){
-            LeaveTrack leaveTrack = new LeaveTrack();
+        for (LeaveTrack leaveTrack : leaveTrackList) {
             leaveTrack.setLeave(leave);
-            leaveTrack.setStatus(statusTrack);
+            leaveTrack.setStatus(statusRepo.findStatusById(leaveTrack.getStatus().getId()));
             leaveTrack.setSystemUser(systemUser);
-            leaveTrack.setCreateDate(LocalDateTime.now());
-            leaveTrackRepo.save(leaveTrack);
+            leaveTrack = leaveTrackRepo.save(leaveTrack);
         }
+
+        LeaveTrack leaveTrack = leaveTrackList.get(leaveTrackList.size() - 1);
+
+        System.out.println("leaveTrack: "+leaveTrack.getStatus().getId());
+
+        leave.setStatus(leaveTrack.getStatus());
 
         return leave;
     }
@@ -84,31 +80,57 @@ public class LeaveServiceImpl implements LeaveService {
     public Leave update(Leave leave, SystemUser systemUser) {
         LeaveType leaveType = leaveTypeRepo.findLeaveTypeById(leave.getLeaveType().getId());
 
-        if(leaveType == null){
-            throw new ResourceException(HttpStatus.NOT_FOUND, "leave_type_not_found");
-        }
-
-        Status status = statusRepo.findStatusById(leave.getStatus().getId());
-
-        if(status == null){
+        if (leaveType == null) {
             throw new ResourceException(HttpStatus.NOT_FOUND, "leave_type_not_found");
         }
 
         Leave currentLeave = leaveRepo.findLeaveById(leave.getId());
 
-        if(currentLeave == null){
+        if (currentLeave == null) {
             throw new ResourceException(HttpStatus.NOT_FOUND, "leave_not_found");
         }
 
         currentLeave.setLeaveType(leaveType);
-        currentLeave.setStatus(status);
         currentLeave.setStartDate(leave.getStartDate());
         currentLeave.setEndDate(leave.getEndDate());
         currentLeave.setNumberOfDays(leave.getNumberOfDays());
         currentLeave.setReceiveDate(leave.getReceiveDate());
+        currentLeave.setEmployeeNumber(leave.getEmployeeNumber());
+
+        List<LeaveTrack> leaveTrackList = leave.getLeaveTrackList();
+
+        leaveTrackRepo.deleteAllByLeave(leave);
+
+        for (LeaveTrack leaveTrack : leaveTrackList) {
+            leaveTrack.setLeave(leave);
+            leaveTrack.setStatus(statusRepo.findStatusById(leaveTrack.getStatus().getId()));
+            leaveTrack.setSystemUser(systemUser);
+            leaveTrackRepo.save(leaveTrack);
+        }
+
+        currentLeave.setStatus(leaveTrackRepo.findTopByLeaveOrderByIdDesc(leave).getStatus());
+
 
         return currentLeave;
 
+    }
+
+    @Override
+    public void delete(Leave leave) {
+
+        Status status = statusRepo.findStatusByCode("ALL_DELETED");
+
+        if (status == null) {
+            throw new ResourceException(HttpStatus.NOT_FOUND, "leave_type_not_found");
+        }
+
+        Leave currentLeave = leaveRepo.findLeaveById(leave.getId());
+
+        if (currentLeave == null) {
+            throw new ResourceException(HttpStatus.NOT_FOUND, "leave_not_found");
+        }
+
+        currentLeave.setStatus(status);
     }
 
     @Override
@@ -136,6 +158,8 @@ public class LeaveServiceImpl implements LeaveService {
                 if (leave.getEmployeeNumber() != null) {
                     predicates.add(cb.like(cb.lower(root.get("employeeNumber")), "%" + leave.getEmployeeNumber().toLowerCase() + "%"));
                 }
+
+                System.out.println("predicates: " + predicates.size());
 
                 predicates.add(cb.notEqual(root.get("status"), statusRepo.findStatusByCode("ALL_DELETED")));
 

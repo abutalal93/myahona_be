@@ -3,15 +3,16 @@ package com.decoders.leaves.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@Table(name = "LEAVE")
+@Table(name = "LEAVE_HR")
 public class Leave implements Serializable {
 
     @Id
-    @SequenceGenerator(name = "LeaveSeq", sequenceName = "LEAVE_SEQ"
+    @SequenceGenerator(name = "LeaveHrSeq", sequenceName = "LEAVE_HR_SEQ"
             , initialValue = 1, allocationSize = 1)
-    @GeneratedValue(generator = "LeaveSeq", strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "LeaveHrSeq", strategy = GenerationType.AUTO)
     @Column(name = "lev_id" , updatable = false, nullable = false, unique = true)
     private Long id;
 
@@ -37,12 +38,15 @@ public class Leave implements Serializable {
     private Long numberOfDays;
 
     @OneToOne
-    @JoinColumn(name = "sts_id", nullable = false)
+    @JoinColumn(name = "sts_id")
     private Status status;
 
     @OneToOne
-    @JoinColumn(name = "lev_typ_id", nullable = false)
+    @JoinColumn(name = "lev_typ_id")
     private LeaveType leaveType;
+
+    @OneToMany(mappedBy="leave" , fetch = FetchType.LAZY)
+    private List<LeaveTrack> leaveTrackList;
 
     public Long getId() {
         return id;
@@ -122,5 +126,13 @@ public class Leave implements Serializable {
 
     public void setLeaveType(LeaveType leaveType) {
         this.leaveType = leaveType;
+    }
+
+    public List<LeaveTrack> getLeaveTrackList() {
+        return leaveTrackList;
+    }
+
+    public void setLeaveTrackList(List<LeaveTrack> leaveTrackList) {
+        this.leaveTrackList = leaveTrackList;
     }
 }
