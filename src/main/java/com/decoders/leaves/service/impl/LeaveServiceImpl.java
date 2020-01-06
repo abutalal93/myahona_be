@@ -169,4 +169,9 @@ public class LeaveServiceImpl implements LeaveService {
 
         return leavePage;
     }
+
+    @Override
+    public List<Leave> findNonCompleatedLeave() {
+        return leaveRepo.findNonCompleatedLeave();
+    }
 }

@@ -24,4 +24,29 @@ public class Utils {
         System.out.println("leaveNumber: "+leaveNumber.length());
         return leaveNumber;
     }
+
+    public static String prepareEmailJsonMessage(String fromEmail , String fromName , String toEmail , String toName , String subject , String htmlPart){
+
+        String messageJson = "{\n" +
+                "    \"Messages\": [\n" +
+                "        {\n" +
+                "            \"From\": {\n" +
+                "                \"Email\": \""+fromEmail+"\",\n" +
+                "                \"Name\": \""+fromName+"\"\n" +
+                "            },\n" +
+                "            \"To\": [\n" +
+                "                {\n" +
+                "                    \"Email\": \""+toEmail+"\",\n" +
+                "                    \"Name\": \""+toName+"\"\n" +
+                "                }\n" +
+                "            ],\n" +
+                "            \"Subject\": \""+subject+"\",\n" +
+                "            \"TextPart\": \"\",\n" +
+                "            \"HTMLPart\": \""+htmlPart+"\"\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+
+        return messageJson;
+    }
 }
