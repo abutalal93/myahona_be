@@ -10,10 +10,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -24,10 +24,14 @@ public class LeaveScheduler {
     @Autowired
     private LeaveService leaveService;
 
-    @Scheduled(cron = "0 0 6 * * *")/*@Scheduled(cron = "0 0 6 * * *") @Scheduled(fixedDelay = 1000)*/
+    @Autowired
+    private Environment environment;
+
+    @Scheduled(cron = "0 0 0 * * *")/*@Scheduled(cron = "0 0 6 * * *") @Scheduled(fixedDelay = 1000)*/
     public void scheduleFixedDelayTask() {
         try {
             System.out.println("M --->");
+            String toEmail = environment.getProperty("to_email");
 
             List<Leave> leaveList = leaveService.findNonCompleatedLeave();
 
@@ -62,7 +66,7 @@ public class LeaveScheduler {
 
             System.out.println("htmlEmailBody: "+htmlEmailBody);
 
-            String jsonMessageBody = Utils.prepareEmailJsonMessage("abdallah.dabbas.93@gmail.com" , "Leave Tracker", "abdallah.dabbas.93@hotmail.com" , "HR", "Leaves Follow up", htmlEmailBody);
+            String jsonMessageBody = Utils.prepareEmailJsonMessage("abdallah.dabbas.93@gmail.com" , "Leave Tracker", toEmail , "HR", "Leaves Follow up", htmlEmailBody);
 
             System.out.println("jsonMessageBody: "+jsonMessageBody);
 
