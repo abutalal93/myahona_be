@@ -29,8 +29,8 @@ public class SimpleCORSFilter implements Filter {
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
         response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Headers", "x-auth-token ,Content-Type ,Accept ,X-Requested-With ,remember-me ,authorization ,WWW-Authenticate,access-control-allow-origin ,cache-control, lng");
-        response.addHeader("Access-Control-Expose-Headers", "x-auth-token");
+        response.setHeader("Access-Control-Allow-Headers", "Authorization ,Content-Type ,Accept ,X-Requested-With ,remember-me ,authorization ,WWW-Authenticate,access-control-allow-origin ,cache-control, lng");
+        response.addHeader("Access-Control-Expose-Headers", "Authorization");
         if (request.getMethod().equals("OPTIONS")) {
             try {
                 response.getWriter().print("OK");

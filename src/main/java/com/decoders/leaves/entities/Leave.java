@@ -46,6 +46,7 @@ public class Leave implements Serializable {
     private LeaveType leaveType;
 
     @OneToMany(mappedBy="leave" , fetch = FetchType.LAZY)
+    @OrderBy("id asc")
     private List<LeaveTrack> leaveTrackList;
 
     public Long getId() {
